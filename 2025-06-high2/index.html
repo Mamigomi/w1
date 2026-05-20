@@ -1,0 +1,3797 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2025년 6월 고2 모의고사 어휘 배틀 게임</title>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.2), transparent 36%),
+    linear-gradient(180deg, #081120 0%, #101a31 55%, #0d1528 100%);
+  color: #f8fbff;
+  font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+  overflow: hidden;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+#wrap {
+  max-width: 560px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0 14px 14px;
+}
+
+header {
+  padding: 18px 10px 8px;
+  text-align: center;
+}
+
+#title {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+#subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgba(232, 242, 255, 0.82);
+  line-height: 1.45;
+}
+
+#statusCard {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(11, 20, 40, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+#statusText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  color: rgba(225, 235, 247, 0.72);
+}
+
+#progressText {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+#lifeWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.life {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #60a5fa, #2563eb);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.48);
+}
+
+.life.dead {
+  opacity: 0.18;
+  filter: grayscale(1);
+  box-shadow: none;
+}
+
+#meter {
+  width: 110px;
+  height: 110px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.22), transparent 34%),
+    conic-gradient(#22c55e var(--meter, 0%), rgba(255,255,255,0.08) 0%);
+  position: relative;
+}
+
+#meter::after {
+  content: "";
+  position: absolute;
+  inset: 11px;
+  border-radius: 50%;
+  background: #0d1730;
+}
+
+#meterValue {
+  position: relative;
+  z-index: 1;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+#wordCard {
+  margin-top: 18px;
+  padding: 24px 18px 20px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(20, 31, 58, 0.9));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  text-align: center;
+}
+
+#english {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  word-break: keep-all;
+}
+
+#hint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: rgba(220, 230, 243, 0.76);
+}
+
+#laneWrap {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  margin-top: 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background:
+    linear-gradient(180deg, rgba(12, 19, 36, 0.74), rgba(10, 16, 31, 0.92)),
+    repeating-linear-gradient(90deg, transparent 0, transparent 38px, rgba(255,255,255,0.03) 38px, rgba(255,255,255,0.03) 40px);
+}
+
+#lane {
+  position: absolute;
+  left: -100%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 14px;
+  white-space: nowrap;
+  padding: 0 14px;
+}
+
+.choice {
+  min-width: 150px;
+  max-width: 220px;
+  padding: 18px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #1d4ed8, #1e40af);
+  border: 1px solid rgba(255,255,255,0.14);
+  text-align: center;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.35;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.28);
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.choice:active {
+  transform: scale(0.96);
+}
+
+.good {
+  background: linear-gradient(180deg, #16a34a, #166534) !important;
+}
+
+.bad {
+  background: linear-gradient(180deg, #ef4444, #991b1b) !important;
+}
+
+#message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 42px;
+  font-weight: 900;
+  pointer-events: none;
+  opacity: 0;
+  text-align: center;
+}
+
+.hit {
+  color: #5eead4;
+  text-shadow: 0 0 18px rgba(94, 234, 212, 0.8);
+}
+
+.wrong {
+  color: #ff8da1;
+  text-shadow: 0 0 18px rgba(255, 141, 161, 0.8);
+}
+
+.show {
+  animation: pop 0.7s;
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.14);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.shake {
+  animation: shake 0.35s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(-8px); }
+  25% { transform: translateX(8px); }
+  50% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 10, 24, 0.84);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 430px;
+  background: linear-gradient(180deg, #101b33, #0b1428);
+  border-radius: 24px;
+  padding: 26px 22px 22px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 24px 50px rgba(0,0,0,0.34);
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.card p {
+  margin: 14px 0 0;
+  line-height: 1.7;
+  color: rgba(234, 241, 250, 0.88);
+}
+
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #38bdf8, #2563eb);
+  color: white;
+  font-size: 17px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  #wrap {
+    padding: 0 10px 10px;
+  }
+
+  #title {
+    font-size: 21px;
+  }
+
+  #statusCard {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  #english {
+    font-size: 28px;
+  }
+
+  .choice {
+    min-width: 138px;
+    font-size: 17px;
+  }
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <header>
+    <div id="title">2025년 6월 고2 모의고사 어휘 배틀 게임</div>
+    <div id="subtitle">18번부터 45번까지의 고2 어휘를 지문 구분 없이 섞어서 출제합니다. 뜻이 지나가기 전에 빠르게 맞혀 보세요.</div>
+  </header>
+
+  <section id="statusCard">
+    <div id="statusText">
+      <div class="label">진행 상황</div>
+      <div id="progressText">0 / 0</div>
+      <div class="label">남은 목숨</div>
+      <div id="lifeWrap"></div>
+    </div>
+    <div id="meter" style="--meter:0%;">
+      <div id="meterValue">0%</div>
+    </div>
+  </section>
+
+  <section id="wordCard">
+    <div id="english">READY?</div>
+    <div id="hint">지나가는 보기 4개 중 알맞은 뜻을 터치하세요.</div>
+  </section>
+
+  <div id="laneWrap">
+    <div id="lane"></div>
+    <div id="message"></div>
+  </div>
+</div>
+
+<div id="overlay">
+  <div class="card">
+    <h2>어휘 배틀 시작</h2>
+    <p>
+      2025년 6월 고2 모의고사 어휘를 무작위로 풀어보는 게임입니다.<br><br>
+      정답을 고르면 다음 문제로 넘어가고,<br>
+      오답이나 시간 초과가 5번 누적되면 게임이 끝납니다.
+    </p>
+    <button id="startBtn">게임 시작</button>
+  </div>
+</div>
+
+<script>
+const words = [
+  {
+    "en": "dear",
+    "ko": "친애하는"
+  },
+  {
+    "en": "express",
+    "ko": "표현하다"
+  },
+  {
+    "en": "gratitude",
+    "ko": "감사"
+  },
+  {
+    "en": "dedication",
+    "ko": "헌신"
+  },
+  {
+    "en": "Spanish",
+    "ko": "스페인어의"
+  },
+  {
+    "en": "instructor",
+    "ko": "강사"
+  },
+  {
+    "en": "exceptional",
+    "ko": "뛰어난"
+  },
+  {
+    "en": "teaching skill",
+    "ko": "교수 능력"
+  },
+  {
+    "en": "significantly",
+    "ko": "크게, 상당히"
+  },
+  {
+    "en": "improve",
+    "ko": "향상시키다"
+  },
+  {
+    "en": "student",
+    "ko": "학생"
+  },
+  {
+    "en": "progress",
+    "ko": "발전"
+  },
+  {
+    "en": "confidence",
+    "ko": "자신감"
+  },
+  {
+    "en": "reflect on",
+    "ko": "~을 되돌아보다"
+  },
+  {
+    "en": "contribution",
+    "ko": "기여"
+  },
+  {
+    "en": "consider",
+    "ko": "고려하다"
+  },
+  {
+    "en": "renewal",
+    "ko": "갱신"
+  },
+  {
+    "en": "contract",
+    "ko": "계약"
+  },
+  {
+    "en": "given",
+    "ko": "~을 감안하면"
+  },
+  {
+    "en": "positive",
+    "ko": "긍정적인"
+  },
+  {
+    "en": "impact",
+    "ko": "영향"
+  },
+  {
+    "en": "offer",
+    "ko": "제안하다"
+  },
+  {
+    "en": "extension",
+    "ko": "연장"
+  },
+  {
+    "en": "next academic year",
+    "ko": "다음 학년도"
+  },
+  {
+    "en": "believe",
+    "ko": "믿다"
+  },
+  {
+    "en": "continued",
+    "ko": "지속적인"
+  },
+  {
+    "en": "involvement",
+    "ko": "참여"
+  },
+  {
+    "en": "further",
+    "ko": "더욱"
+  },
+  {
+    "en": "enhance",
+    "ko": "향상시키다"
+  },
+  {
+    "en": "learning experience",
+    "ko": "학습 경험"
+  },
+  {
+    "en": "academic achievement",
+    "ko": "학업 성취"
+  },
+  {
+    "en": "look forward to",
+    "ko": "~을 기대하다"
+  },
+  {
+    "en": "response",
+    "ko": "답변"
+  },
+  {
+    "en": "sincerely",
+    "ko": "진심으로"
+  },
+  {
+    "en": "principal",
+    "ko": "교장"
+  },
+  {
+    "en": "step out of",
+    "ko": "~에서 나오다"
+  },
+  {
+    "en": "freezing",
+    "ko": "몹시 추운"
+  },
+  {
+    "en": "night air",
+    "ko": "밤공기"
+  },
+  {
+    "en": "brightly lit",
+    "ko": "환히 불이 켜진"
+  },
+  {
+    "en": "hospital lobby",
+    "ko": "병원 로비"
+  },
+  {
+    "en": "hold",
+    "ko": "안다"
+  },
+  {
+    "en": "three-year-old",
+    "ko": "세 살의"
+  },
+  {
+    "en": "harsh",
+    "ko": "강렬한"
+  },
+  {
+    "en": "unwell",
+    "ko": "몸이 좋지 않은"
+  },
+  {
+    "en": "sweaty",
+    "ko": "땀에 젖은"
+  },
+  {
+    "en": "fever",
+    "ko": "열"
+  },
+  {
+    "en": "suddenly",
+    "ko": "갑자기"
+  },
+  {
+    "en": "despite",
+    "ko": "~에도 불구하고"
+  },
+  {
+    "en": "effort",
+    "ko": "노력"
+  },
+  {
+    "en": "go down",
+    "ko": "내려가다"
+  },
+  {
+    "en": "front desk",
+    "ko": "접수대"
+  },
+  {
+    "en": "symptom",
+    "ko": "증상"
+  },
+  {
+    "en": "concern",
+    "ko": "걱정"
+  },
+  {
+    "en": "reassure",
+    "ko": "안심시키다"
+  },
+  {
+    "en": "examine",
+    "ko": "진찰하다"
+  },
+  {
+    "en": "shot",
+    "ko": "주사"
+  },
+  {
+    "en": "peacefully",
+    "ko": "평화롭게"
+  },
+  {
+    "en": "wave of calm",
+    "ko": "안도의 물결"
+  },
+  {
+    "en": "wash over",
+    "ko": "밀려오다"
+  },
+  {
+    "en": "imagine",
+    "ko": "상상하다"
+  },
+  {
+    "en": "impermeable",
+    "ko": "스며들지 않는"
+  },
+  {
+    "en": "teabag",
+    "ko": "티백"
+  },
+  {
+    "en": "porous",
+    "ko": "구멍이 있는"
+  },
+  {
+    "en": "come in contact with",
+    "ko": "~와 접촉하다"
+  },
+  {
+    "en": "survive",
+    "ko": "살아남다"
+  },
+  {
+    "en": "thrive",
+    "ko": "성장하다"
+  },
+  {
+    "en": "isolation",
+    "ko": "고립"
+  },
+  {
+    "en": "leader",
+    "ko": "리더"
+  },
+  {
+    "en": "prevent A from B",
+    "ko": "A가 B하는 것을 막다"
+  },
+  {
+    "en": "reach out to",
+    "ko": "~에게 다가가다"
+  },
+  {
+    "en": "mix with",
+    "ko": "~와 섞이다"
+  },
+  {
+    "en": "similarly",
+    "ko": "마찬가지로"
+  },
+  {
+    "en": "society at large",
+    "ko": "사회 전체"
+  },
+  {
+    "en": "difficult",
+    "ko": "어려운"
+  },
+  {
+    "en": "impossible",
+    "ko": "불가능한"
+  },
+  {
+    "en": "define",
+    "ko": "정의하다, 규정하다"
+  },
+  {
+    "en": "limit",
+    "ko": "한계"
+  },
+  {
+    "en": "reason",
+    "ko": "이성"
+  },
+  {
+    "en": "should",
+    "ko": "~해야 한다"
+  },
+  {
+    "en": "impose A on B",
+    "ko": "A를 B에 두다, 부과하다"
+  },
+  {
+    "en": "desire",
+    "ko": "욕망"
+  },
+  {
+    "en": "wealth",
+    "ko": "부"
+  },
+  {
+    "en": "absolute",
+    "ko": "절대적인"
+  },
+  {
+    "en": "definite",
+    "ko": "명확한, 정해진"
+  },
+  {
+    "en": "amount",
+    "ko": "양"
+  },
+  {
+    "en": "satisfy",
+    "ko": "만족시키다"
+  },
+  {
+    "en": "relative",
+    "ko": "상대적인"
+  },
+  {
+    "en": "that is to say",
+    "ko": "즉"
+  },
+  {
+    "en": "maintain",
+    "ko": "유지하다"
+  },
+  {
+    "en": "proportion",
+    "ko": "비율"
+  },
+  {
+    "en": "between A and B",
+    "ko": "A와 B 사이에"
+  },
+  {
+    "en": "measure",
+    "ko": "측정하다, 평가하다"
+  },
+  {
+    "en": "happiness",
+    "ko": "행복"
+  },
+  {
+    "en": "not only A but also B",
+    "ko": "A뿐만 아니라 B도"
+  },
+  {
+    "en": "pointless",
+    "ko": "무의미한"
+  },
+  {
+    "en": "try to",
+    "ko": "~하려고 하다"
+  },
+  {
+    "en": "express",
+    "ko": "표현하다"
+  },
+  {
+    "en": "fraction",
+    "ko": "분수"
+  },
+  {
+    "en": "numerator",
+    "ko": "분자"
+  },
+  {
+    "en": "denominator",
+    "ko": "분모"
+  },
+  {
+    "en": "feel",
+    "ko": "느끼다"
+  },
+  {
+    "en": "loss",
+    "ko": "상실"
+  },
+  {
+    "en": "thing",
+    "ko": "것"
+  },
+  {
+    "en": "occur to",
+    "ko": "~의 마음에 떠오르다"
+  },
+  {
+    "en": "ask for",
+    "ko": "요구하다"
+  },
+  {
+    "en": "just as ~ as",
+    "ko": "~만큼 ~한"
+  },
+  {
+    "en": "whilst",
+    "ko": "반면에"
+  },
+  {
+    "en": "another",
+    "ko": "다른 사람"
+  },
+  {
+    "en": "a hundred times as much",
+    "ko": "백 배나 많은"
+  },
+  {
+    "en": "miserable",
+    "ko": "비참한"
+  },
+  {
+    "en": "in fact",
+    "ko": "사실"
+  },
+  {
+    "en": "every",
+    "ko": "모든"
+  },
+  {
+    "en": "horizon",
+    "ko": "지평선"
+  },
+  {
+    "en": "of one’s own",
+    "ko": "자기 자신의"
+  },
+  {
+    "en": "expect",
+    "ko": "기대하다"
+  },
+  {
+    "en": "as much as",
+    "ko": "~만큼"
+  },
+  {
+    "en": "possible",
+    "ko": "가능한"
+  },
+  {
+    "en": "get",
+    "ko": "얻다"
+  },
+  {
+    "en": "think",
+    "ko": "생각하다"
+  },
+  {
+    "en": "restaurant",
+    "ko": "음식점"
+  },
+  {
+    "en": "carefully",
+    "ko": "신중하게"
+  },
+  {
+    "en": "chosen",
+    "ko": "선택된"
+  },
+  {
+    "en": "word",
+    "ko": "단어"
+  },
+  {
+    "en": "evoke",
+    "ko": "불러일으키다"
+  },
+  {
+    "en": "vivid",
+    "ko": "생생한"
+  },
+  {
+    "en": "mental image",
+    "ko": "마음속 이미지"
+  },
+  {
+    "en": "delicious",
+    "ko": "맛있는"
+  },
+  {
+    "en": "rich",
+    "ko": "풍부한"
+  },
+  {
+    "en": "dessert",
+    "ko": "디저트"
+  },
+  {
+    "en": "in order to",
+    "ko": "~하기 위해"
+  },
+  {
+    "en": "draw",
+    "ko": "끌어들이다"
+  },
+  {
+    "en": "potential",
+    "ko": "잠재적인"
+  },
+  {
+    "en": "customer",
+    "ko": "고객"
+  },
+  {
+    "en": "particular",
+    "ko": "특정한"
+  },
+  {
+    "en": "establishment",
+    "ko": "가게, 시설"
+  },
+  {
+    "en": "nature",
+    "ko": "자연"
+  },
+  {
+    "en": "dining establishment",
+    "ko": "식당"
+  },
+  {
+    "en": "in a fashion similar to",
+    "ko": "~와 유사한 방식으로"
+  },
+  {
+    "en": "financial",
+    "ko": "재정의"
+  },
+  {
+    "en": "dependence upon",
+    "ko": "~에 대한 의존"
+  },
+  {
+    "en": "draw in",
+    "ko": "끌어들이다"
+  },
+  {
+    "en": "restaurateur",
+    "ko": "음식점 경영자"
+  },
+  {
+    "en": "natural world",
+    "ko": "자연 세계"
+  },
+  {
+    "en": "attract",
+    "ko": "끌어들이다"
+  },
+  {
+    "en": "diner",
+    "ko": "식사 손님"
+  },
+  {
+    "en": "sample",
+    "ko": "맛보다"
+  },
+  {
+    "en": "offering",
+    "ko": "제공물"
+  },
+  {
+    "en": "neon sign",
+    "ko": "네온사인"
+  },
+  {
+    "en": "flashy",
+    "ko": "화려한"
+  },
+  {
+    "en": "market",
+    "ko": "광고하다"
+  },
+  {
+    "en": "meal",
+    "ko": "식사"
+  },
+  {
+    "en": "hungry",
+    "ko": "배고픈"
+  },
+  {
+    "en": "animal",
+    "ko": "동물"
+  },
+  {
+    "en": "refer to",
+    "ko": "언급하다"
+  },
+  {
+    "en": "flower",
+    "ko": "꽃"
+  },
+  {
+    "en": "potential guest",
+    "ko": "잠재적 손님"
+  },
+  {
+    "en": "a host of",
+    "ko": "수많은"
+  },
+  {
+    "en": "organism",
+    "ko": "생물"
+  },
+  {
+    "en": "visit",
+    "ko": "방문하다"
+  },
+  {
+    "en": "obtain",
+    "ko": "얻다"
+  },
+  {
+    "en": "nectar",
+    "ko": "꿀"
+  },
+  {
+    "en": "valuable",
+    "ko": "귀중한"
+  },
+  {
+    "en": "resource",
+    "ko": "자원"
+  },
+  {
+    "en": "instead of",
+    "ko": "~대신에"
+  },
+  {
+    "en": "written language",
+    "ko": "문자 언어"
+  },
+  {
+    "en": "advertise",
+    "ko": "광고하다"
+  },
+  {
+    "en": "effectively",
+    "ko": "효과적으로"
+  },
+  {
+    "en": "language of smell",
+    "ko": "냄새의 언어"
+  },
+  {
+    "en": "graph",
+    "ko": "그래프"
+  },
+  {
+    "en": "above",
+    "ko": "위의"
+  },
+  {
+    "en": "show",
+    "ko": "보여주다"
+  },
+  {
+    "en": "dairy product",
+    "ko": "유제품"
+  },
+  {
+    "en": "import",
+    "ko": "수입"
+  },
+  {
+    "en": "selected",
+    "ko": "선택된"
+  },
+  {
+    "en": "country",
+    "ko": "국가"
+  },
+  {
+    "en": "consistently",
+    "ko": "일관되게"
+  },
+  {
+    "en": "record",
+    "ko": "기록하다"
+  },
+  {
+    "en": "highest",
+    "ko": "가장 높은"
+  },
+  {
+    "en": "however",
+    "ko": "그러나"
+  },
+  {
+    "en": "decrease",
+    "ko": "감소하다"
+  },
+  {
+    "en": "while",
+    "ko": "반면에"
+  },
+  {
+    "en": "reverse",
+    "ko": "반대"
+  },
+  {
+    "en": "during",
+    "ko": "~동안"
+  },
+  {
+    "en": "period",
+    "ko": "기간"
+  },
+  {
+    "en": "more than",
+    "ko": "~이상"
+  },
+  {
+    "en": "twice",
+    "ko": "두 배"
+  },
+  {
+    "en": "increase",
+    "ko": "증가"
+  },
+  {
+    "en": "larger than",
+    "ko": "~보다 더 큰"
+  },
+  {
+    "en": "drop",
+    "ko": "하락하다"
+  },
+  {
+    "en": "between A and B",
+    "ko": "A와 B 사이에"
+  },
+  {
+    "en": "the only",
+    "ko": "유일한"
+  },
+  {
+    "en": "consider",
+    "ko": "여기다"
+  },
+  {
+    "en": "founding father",
+    "ko": "창시자"
+  },
+  {
+    "en": "Renaissance architecture",
+    "ko": "르네상스 건축"
+  },
+  {
+    "en": "be born",
+    "ko": "태어나다"
+  },
+  {
+    "en": "artistically",
+    "ko": "예술적으로"
+  },
+  {
+    "en": "talented",
+    "ko": "재능 있는"
+  },
+  {
+    "en": "train",
+    "ko": "훈련시키다"
+  },
+  {
+    "en": "goldsmith",
+    "ko": "금 세공인"
+  },
+  {
+    "en": "clockmaker",
+    "ko": "시계공"
+  },
+  {
+    "en": "architect",
+    "ko": "건축가"
+  },
+  {
+    "en": "around",
+    "ko": "약, 대략"
+  },
+  {
+    "en": "travel",
+    "ko": "여행하다"
+  },
+  {
+    "en": "sculptor",
+    "ko": "조각가"
+  },
+  {
+    "en": "remain",
+    "ko": "유적, 남은 것"
+  },
+  {
+    "en": "ancient",
+    "ko": "고대의"
+  },
+  {
+    "en": "Roman",
+    "ko": "로마의"
+  },
+  {
+    "en": "building",
+    "ko": "건물"
+  },
+  {
+    "en": "architectural",
+    "ko": "건축의"
+  },
+  {
+    "en": "commission",
+    "ko": "임무, 의뢰"
+  },
+  {
+    "en": "great",
+    "ko": "위대한"
+  },
+  {
+    "en": "a number of",
+    "ko": "수많은"
+  },
+  {
+    "en": "fine",
+    "ko": "훌륭한"
+  },
+  {
+    "en": "chapel",
+    "ko": "예배당"
+  },
+  {
+    "en": "strengthen",
+    "ko": "강화하다, 공고히 하다"
+  },
+  {
+    "en": "reputation",
+    "ko": "명성"
+  },
+  {
+    "en": "stunning",
+    "ko": "멋진"
+  },
+  {
+    "en": "dome",
+    "ko": "돔"
+  },
+  {
+    "en": "masterpiece",
+    "ko": "걸작"
+  },
+  {
+    "en": "design",
+    "ko": "설계하다"
+  },
+  {
+    "en": "machinery",
+    "ko": "기계"
+  },
+  {
+    "en": "produce",
+    "ko": "만들어내다"
+  },
+  {
+    "en": "special effect",
+    "ko": "특수 효과"
+  },
+  {
+    "en": "theatrical production",
+    "ko": "연극 작품"
+  },
+  {
+    "en": "die",
+    "ko": "죽다"
+  },
+  {
+    "en": "bury",
+    "ko": "묻다"
+  },
+  {
+    "en": "annual",
+    "ko": "연례의"
+  },
+  {
+    "en": "event",
+    "ko": "행사"
+  },
+  {
+    "en": "improve",
+    "ko": "향상시키다"
+  },
+  {
+    "en": "leadership",
+    "ko": "리더십"
+  },
+  {
+    "en": "look forward to",
+    "ko": "~을 기대하다"
+  },
+  {
+    "en": "age",
+    "ko": "나이"
+  },
+  {
+    "en": "place",
+    "ko": "장소"
+  },
+  {
+    "en": "team building",
+    "ko": "팀 구성"
+  },
+  {
+    "en": "leadership skill",
+    "ko": "리더십 역량"
+  },
+  {
+    "en": "workshop",
+    "ko": "워크숍"
+  },
+  {
+    "en": "culture tour",
+    "ko": "문화 탐방"
+  },
+  {
+    "en": "project planning",
+    "ko": "프로젝트 기획"
+  },
+  {
+    "en": "presentation",
+    "ko": "발표"
+  },
+  {
+    "en": "participation fee",
+    "ko": "참가비"
+  },
+  {
+    "en": "registration",
+    "ko": "등록"
+  },
+  {
+    "en": "available",
+    "ko": "가능한"
+  },
+  {
+    "en": "online",
+    "ko": "온라인으로"
+  },
+  {
+    "en": "include",
+    "ko": "포함하다"
+  },
+  {
+    "en": "except for",
+    "ko": "~을 제외하고"
+  },
+  {
+    "en": "flight ticket",
+    "ko": "항공권"
+  },
+  {
+    "en": "for more information",
+    "ko": "더 많은 정보를 위해"
+  },
+  {
+    "en": "website",
+    "ko": "웹사이트"
+  },
+  {
+    "en": "jog",
+    "ko": "조깅하다"
+  },
+  {
+    "en": "pick up",
+    "ko": "줍다"
+  },
+  {
+    "en": "trash",
+    "ko": "쓰레기"
+  },
+  {
+    "en": "conserve",
+    "ko": "보존하다"
+  },
+  {
+    "en": "Earth",
+    "ko": "지구"
+  },
+  {
+    "en": "detail",
+    "ko": "세부 사항"
+  },
+  {
+    "en": "participation fee",
+    "ko": "참가비"
+  },
+  {
+    "en": "around",
+    "ko": "주변에"
+  },
+  {
+    "en": "wear",
+    "ko": "착용하다"
+  },
+  {
+    "en": "comfortable",
+    "ko": "편안한"
+  },
+  {
+    "en": "athletic clothes",
+    "ko": "운동복"
+  },
+  {
+    "en": "running shoes",
+    "ko": "운동화"
+  },
+  {
+    "en": "for one’s safety",
+    "ko": "안전을 위해"
+  },
+  {
+    "en": "garbage bag",
+    "ko": "쓰레기봉투"
+  },
+  {
+    "en": "provide",
+    "ko": "제공하다"
+  },
+  {
+    "en": "cancel",
+    "ko": "취소하다"
+  },
+  {
+    "en": "question",
+    "ko": "질문"
+  },
+  {
+    "en": "email",
+    "ko": "이메일을 보내다"
+  },
+  {
+    "en": "event",
+    "ko": "행사"
+  },
+  {
+    "en": "start",
+    "ko": "시작하다"
+  },
+  {
+    "en": "rain",
+    "ko": "비가 오다"
+  },
+  {
+    "en": "lake",
+    "ko": "호수"
+  },
+  {
+    "en": "art",
+    "ko": "미술"
+  },
+  {
+    "en": "perspective",
+    "ko": "원근법"
+  },
+  {
+    "en": "obtain",
+    "ko": "얻다"
+  },
+  {
+    "en": "illusion",
+    "ko": "착시"
+  },
+  {
+    "en": "depth",
+    "ko": "깊이"
+  },
+  {
+    "en": "including",
+    "ko": "~을 포함하여"
+  },
+  {
+    "en": "color",
+    "ko": "색상"
+  },
+  {
+    "en": "graduated value",
+    "ko": "점진적인 톤 변화"
+  },
+  {
+    "en": "black and white",
+    "ko": "흑백"
+  },
+  {
+    "en": "accurately",
+    "ko": "정확하게"
+  },
+  {
+    "en": "draw",
+    "ko": "그리다"
+  },
+  {
+    "en": "subject",
+    "ko": "대상"
+  },
+  {
+    "en": "apply",
+    "ko": "적용하다"
+  },
+  {
+    "en": "rule",
+    "ko": "규칙"
+  },
+  {
+    "en": "geometric",
+    "ko": "기하학의"
+  },
+  {
+    "en": "system",
+    "ko": "체계"
+  },
+  {
+    "en": "in order to",
+    "ko": "~하기 위해"
+  },
+  {
+    "en": "achieve",
+    "ko": "구현하다"
+  },
+  {
+    "en": "observation",
+    "ko": "관찰"
+  },
+  {
+    "en": "form",
+    "ko": "형태"
+  },
+  {
+    "en": "object",
+    "ko": "물체"
+  },
+  {
+    "en": "flat surface",
+    "ko": "평면"
+  },
+  {
+    "en": "actually",
+    "ko": "실제로"
+  },
+  {
+    "en": "dimension",
+    "ko": "차원"
+  },
+  {
+    "en": "real life",
+    "ko": "실생활"
+  },
+  {
+    "en": "place",
+    "ko": "배치하다"
+  },
+  {
+    "en": "shape",
+    "ko": "모양"
+  },
+  {
+    "en": "represent",
+    "ko": "나타내다"
+  },
+  {
+    "en": "appear",
+    "ko": "~처럼 보이다"
+  },
+  {
+    "en": "realistic",
+    "ko": "현실적인"
+  },
+  {
+    "en": "three-dimensional",
+    "ko": "3차원의"
+  },
+  {
+    "en": "various",
+    "ko": "다양한"
+  },
+  {
+    "en": "position",
+    "ko": "위치"
+  },
+  {
+    "en": "because of",
+    "ko": "~때문에"
+  },
+  {
+    "en": "establish",
+    "ko": "설정하다"
+  },
+  {
+    "en": "viewpoint",
+    "ko": "관찰점"
+  },
+  {
+    "en": "stick with",
+    "ko": "~을 고수하다"
+  },
+  {
+    "en": "observe",
+    "ko": "관찰하다"
+  },
+  {
+    "en": "onto",
+    "ko": "~위에"
+  },
+  {
+    "en": "as it appears to the eye",
+    "ko": "눈에 보이는 대로"
+  },
+  {
+    "en": "low oil price",
+    "ko": "낮은 유가"
+  },
+  {
+    "en": "energy cost",
+    "ko": "에너지 비용"
+  },
+  {
+    "en": "production",
+    "ko": "생산"
+  },
+  {
+    "en": "majority",
+    "ko": "대다수"
+  },
+  {
+    "en": "industry",
+    "ko": "산업"
+  },
+  {
+    "en": "not least",
+    "ko": "특히"
+  },
+  {
+    "en": "automobile",
+    "ko": "자동차"
+  },
+  {
+    "en": "logistics",
+    "ko": "물류"
+  },
+  {
+    "en": "directly",
+    "ko": "직접적으로"
+  },
+  {
+    "en": "benefit from",
+    "ko": "~로부터 혜택을 보다"
+  },
+  {
+    "en": "decrease",
+    "ko": "감소"
+  },
+  {
+    "en": "provision",
+    "ko": "제공"
+  },
+  {
+    "en": "service",
+    "ko": "서비스"
+  },
+  {
+    "en": "have the effect of",
+    "ko": "~의 효과를 가지다"
+  },
+  {
+    "en": "stimulate",
+    "ko": "촉진하다"
+  },
+  {
+    "en": "aggregate supply",
+    "ko": "총공급"
+  },
+  {
+    "en": "provide",
+    "ko": "제공하다"
+  },
+  {
+    "en": "stimulus",
+    "ko": "자극"
+  },
+  {
+    "en": "growth",
+    "ko": "성장"
+  },
+  {
+    "en": "conversely",
+    "ko": "반대로"
+  },
+  {
+    "en": "sudden",
+    "ko": "갑작스러운"
+  },
+  {
+    "en": "rise",
+    "ko": "상승"
+  },
+  {
+    "en": "due to",
+    "ko": "~로 인한"
+  },
+  {
+    "en": "shrink",
+    "ko": "감소"
+  },
+  {
+    "en": "definitely",
+    "ko": "분명히"
+  },
+  {
+    "en": "boost",
+    "ko": "도움, 촉진"
+  },
+  {
+    "en": "energy sector",
+    "ko": "에너지 부문"
+  },
+  {
+    "en": "a look through",
+    "ko": "~에 대한 검토"
+  },
+  {
+    "en": "history",
+    "ko": "역사"
+  },
+  {
+    "en": "fluctuation",
+    "ko": "변동"
+  },
+  {
+    "en": "confirm",
+    "ko": "확증하다"
+  },
+  {
+    "en": "notion",
+    "ko": "개념"
+  },
+  {
+    "en": "subject",
+    "ko": "주제"
+  },
+  {
+    "en": "economic research",
+    "ko": "경제 연구"
+  },
+  {
+    "en": "following",
+    "ko": "~에 이어"
+  },
+  {
+    "en": "jump",
+    "ko": "급등"
+  },
+  {
+    "en": "contraction",
+    "ko": "축소"
+  },
+  {
+    "en": "supply",
+    "ko": "공급"
+  },
+  {
+    "en": "economy",
+    "ko": "경제"
+  },
+  {
+    "en": "typify",
+    "ko": "대표하다"
+  },
+  {
+    "en": "output",
+    "ko": "생산량"
+  },
+  {
+    "en": "GDP",
+    "ko": "국내총생산"
+  },
+  {
+    "en": "slow",
+    "ko": "둔화되다"
+  },
+  {
+    "en": "percentage point",
+    "ko": "퍼센트포인트"
+  },
+  {
+    "en": "potential wealth",
+    "ko": "잠재적 부"
+  },
+  {
+    "en": "excess",
+    "ko": "과잉"
+  },
+  {
+    "en": "concern",
+    "ko": "우려"
+  },
+  {
+    "en": "anecdote",
+    "ko": "일화"
+  },
+  {
+    "en": "stranger",
+    "ko": "낯선 사람"
+  },
+  {
+    "en": "make connections with",
+    "ko": "~와 연관성을 만들다"
+  },
+  {
+    "en": "existing",
+    "ko": "기존의"
+  },
+  {
+    "en": "association",
+    "ko": "연상"
+  },
+  {
+    "en": "piece of gossip",
+    "ko": "소문 한 조각"
+  },
+  {
+    "en": "cousin",
+    "ko": "사촌"
+  },
+  {
+    "en": "complex",
+    "ko": "복잡한"
+  },
+  {
+    "en": "network",
+    "ko": "네트워크"
+  },
+  {
+    "en": "access",
+    "ko": "접근하다"
+  },
+  {
+    "en": "self",
+    "ko": "자아"
+  },
+  {
+    "en": "junior high",
+    "ko": "중학교"
+  },
+  {
+    "en": "be capable of",
+    "ko": "~할 수 있다"
+  },
+  {
+    "en": "process",
+    "ko": "처리하다"
+  },
+  {
+    "en": "closer to home",
+    "ko": "더 와닿는"
+  },
+  {
+    "en": "actual",
+    "ko": "실제의"
+  },
+  {
+    "en": "vacation",
+    "ko": "휴가"
+  },
+  {
+    "en": "effective",
+    "ko": "효과적인"
+  },
+  {
+    "en": "communicator",
+    "ko": "의사소통자"
+  },
+  {
+    "en": "abstract",
+    "ko": "추상적인"
+  },
+  {
+    "en": "personal",
+    "ko": "개인적인"
+  },
+  {
+    "en": "warning",
+    "ko": "경고"
+  },
+  {
+    "en": "law school",
+    "ko": "로스쿨"
+  },
+  {
+    "en": "motivate",
+    "ko": "동기를 부여하다"
+  },
+  {
+    "en": "concerning",
+    "ko": "~에 관한"
+  },
+  {
+    "en": "rigor",
+    "ko": "엄격함"
+  },
+  {
+    "en": "dropout rate",
+    "ko": "중도 탈락률"
+  },
+  {
+    "en": "statistic",
+    "ko": "통계"
+  },
+  {
+    "en": "wake up",
+    "ko": "깨우다"
+  },
+  {
+    "en": "analogy",
+    "ko": "유사성"
+  },
+  {
+    "en": "embrace",
+    "ko": "받아들이다"
+  },
+  {
+    "en": "technology",
+    "ko": "기술"
+  },
+  {
+    "en": "physical world",
+    "ko": "물리적 세계"
+  },
+  {
+    "en": "pen",
+    "ko": "펜"
+  },
+  {
+    "en": "file folder",
+    "ko": "파일 폴더"
+  },
+  {
+    "en": "virtual world",
+    "ko": "가상 세계"
+  },
+  {
+    "en": "radically",
+    "ko": "혁신적으로"
+  },
+  {
+    "en": "fundamentally",
+    "ko": "근본적으로"
+  },
+  {
+    "en": "similar",
+    "ko": "유사한"
+  },
+  {
+    "en": "win over",
+    "ko": "사로잡다"
+  },
+  {
+    "en": "mass",
+    "ko": "대중"
+  },
+  {
+    "en": "draw analogy between A and B",
+    "ko": "A와 B 사이의 유사성을 끌어내다"
+  },
+  {
+    "en": "traditional",
+    "ko": "전통적인"
+  },
+  {
+    "en": "workplace",
+    "ko": "일터"
+  },
+  {
+    "en": "unfamiliar",
+    "ko": "낯선"
+  },
+  {
+    "en": "idea",
+    "ko": "생각"
+  },
+  {
+    "en": "document",
+    "ko": "문서"
+  },
+  {
+    "en": "store",
+    "ko": "저장하다"
+  },
+  {
+    "en": "folder",
+    "ko": "폴더"
+  },
+  {
+    "en": "keep",
+    "ko": "보관하다"
+  },
+  {
+    "en": "desktop",
+    "ko": "데스크탑"
+  },
+  {
+    "en": "familiar",
+    "ko": "친숙한"
+  },
+  {
+    "en": "term",
+    "ko": "용어"
+  },
+  {
+    "en": "easier",
+    "ko": "더 쉬운"
+  },
+  {
+    "en": "understand",
+    "ko": "이해하다"
+  },
+  {
+    "en": "parallel",
+    "ko": "유사점"
+  },
+  {
+    "en": "obvious",
+    "ko": "분명한"
+  },
+  {
+    "en": "turtle hatchling",
+    "ko": "갓 부화한 거북이"
+  },
+  {
+    "en": "evolve",
+    "ko": "진화하다"
+  },
+  {
+    "en": "crawl",
+    "ko": "기어가다"
+  },
+  {
+    "en": "toward",
+    "ko": "~을 향해"
+  },
+  {
+    "en": "light",
+    "ko": "빛"
+  },
+  {
+    "en": "million",
+    "ko": "백만"
+  },
+  {
+    "en": "rational",
+    "ko": "이성적인"
+  },
+  {
+    "en": "effective",
+    "ko": "효과적인"
+  },
+  {
+    "en": "strategy",
+    "ko": "전략"
+  },
+  {
+    "en": "represent",
+    "ko": "나타내다"
+  },
+  {
+    "en": "reflection",
+    "ko": "반사"
+  },
+  {
+    "en": "moon",
+    "ko": "달"
+  },
+  {
+    "en": "star",
+    "ko": "별"
+  },
+  {
+    "en": "water’s surface",
+    "ko": "수면"
+  },
+  {
+    "en": "following",
+    "ko": "따라가는 것"
+  },
+  {
+    "en": "lead A back to B",
+    "ko": "A를 B로 다시 이끌다"
+  },
+  {
+    "en": "sea",
+    "ko": "바다"
+  },
+  {
+    "en": "problem",
+    "ko": "문제"
+  },
+  {
+    "en": "human",
+    "ko": "인간"
+  },
+  {
+    "en": "beachfront home",
+    "ko": "해변가 주택"
+  },
+  {
+    "en": "sparkling",
+    "ko": "반짝이는"
+  },
+  {
+    "en": "hotel",
+    "ko": "호텔"
+  },
+  {
+    "en": "on the other side of",
+    "ko": "~의 반대편에"
+  },
+  {
+    "en": "hatch",
+    "ko": "부화하다"
+  },
+  {
+    "en": "head for",
+    "ko": "~을 향해 가다"
+  },
+  {
+    "en": "bright",
+    "ko": "밝은"
+  },
+  {
+    "en": "nearby",
+    "ko": "근처의"
+  },
+  {
+    "en": "guide",
+    "ko": "유도하다"
+  },
+  {
+    "en": "straight into",
+    "ko": "곧장 ~으로"
+  },
+  {
+    "en": "traffic",
+    "ko": "차량, 교통"
+  },
+  {
+    "en": "self-destructive",
+    "ko": "자멸적인"
+  },
+  {
+    "en": "naturally",
+    "ko": "선천적으로"
+  },
+  {
+    "en": "irrational",
+    "ko": "비이성적인"
+  },
+  {
+    "en": "modern world",
+    "ko": "현대 세계"
+  },
+  {
+    "en": "deeper",
+    "ko": "더 깊은"
+  },
+  {
+    "en": "truth",
+    "ko": "진실"
+  },
+  {
+    "en": "base A on B",
+    "ko": "A를 B에 기반을 두다"
+  },
+  {
+    "en": "decision",
+    "ko": "결정"
+  },
+  {
+    "en": "simple cue",
+    "ko": "단순한 단서"
+  },
+  {
+    "en": "perfectly",
+    "ko": "완벽하게"
+  },
+  {
+    "en": "ancestor",
+    "ko": "조상"
+  },
+  {
+    "en": "these days",
+    "ko": "요즘"
+  },
+  {
+    "en": "evolved",
+    "ko": "진화된"
+  },
+  {
+    "en": "decision-making mechanism",
+    "ko": "의사결정 메커니즘"
+  },
+  {
+    "en": "blind",
+    "ko": "가리다"
+  },
+  {
+    "en": "sensory organ",
+    "ko": "감각 기관"
+  },
+  {
+    "en": "channel",
+    "ko": "채널"
+  },
+  {
+    "en": "communication",
+    "ko": "소통"
+  },
+  {
+    "en": "brain",
+    "ko": "뇌"
+  },
+  {
+    "en": "outside world",
+    "ko": "외부 세계"
+  },
+  {
+    "en": "simply put",
+    "ko": "간단히 말해"
+  },
+  {
+    "en": "on one’s own",
+    "ko": "스스로"
+  },
+  {
+    "en": "for instance",
+    "ko": "예를 들어"
+  },
+  {
+    "en": "exposed",
+    "ko": "노출된"
+  },
+  {
+    "en": "sense",
+    "ko": "감지하다"
+  },
+  {
+    "en": "shine on",
+    "ko": "~에 비추다"
+  },
+  {
+    "en": "touch",
+    "ko": "접촉하다"
+  },
+  {
+    "en": "patient",
+    "ko": "환자"
+  },
+  {
+    "en": "surgery",
+    "ko": "수술"
+  },
+  {
+    "en": "surgeon",
+    "ko": "외과 의사"
+  },
+  {
+    "en": "isolate",
+    "ko": "분리하다"
+  },
+  {
+    "en": "specific",
+    "ko": "특정한"
+  },
+  {
+    "en": "region",
+    "ko": "영역"
+  },
+  {
+    "en": "ancient",
+    "ko": "고대의"
+  },
+  {
+    "en": "philosopher",
+    "ko": "철학자"
+  },
+  {
+    "en": "recognize",
+    "ko": "인식하다"
+  },
+  {
+    "en": "characteristic",
+    "ko": "특성"
+  },
+  {
+    "en": "pass through",
+    "ko": "~을 통과하다"
+  },
+  {
+    "en": "concept",
+    "ko": "개념"
+  },
+  {
+    "en": "clearly",
+    "ko": "명확하게"
+  },
+  {
+    "en": "volunteer",
+    "ko": "지원자"
+  },
+  {
+    "en": "blind-fold",
+    "ko": "눈을 가리다"
+  },
+  {
+    "en": "place",
+    "ko": "놓다"
+  },
+  {
+    "en": "sensory deprivation tank",
+    "ko": "감각 차단 수조"
+  },
+  {
+    "en": "experience",
+    "ko": "경험하다"
+  },
+  {
+    "en": "visual",
+    "ko": "시각적인"
+  },
+  {
+    "en": "auditory",
+    "ko": "청각적인"
+  },
+  {
+    "en": "tactile",
+    "ko": "촉각의"
+  },
+  {
+    "en": "hallucination",
+    "ko": "환각"
+  },
+  {
+    "en": "as well as",
+    "ko": "~뿐만 아니라"
+  },
+  {
+    "en": "incoherent",
+    "ko": "일관성 없는"
+  },
+  {
+    "en": "thought pattern",
+    "ko": "사고 패턴"
+  },
+  {
+    "en": "experiment",
+    "ko": "실험"
+  },
+  {
+    "en": "apparent",
+    "ko": "명백한"
+  },
+  {
+    "en": "constant",
+    "ko": "지속적인"
+  },
+  {
+    "en": "input",
+    "ko": "입력"
+  },
+  {
+    "en": "carry out",
+    "ko": "수행하다"
+  },
+  {
+    "en": "function",
+    "ko": "기능"
+  },
+  {
+    "en": "personality",
+    "ko": "성격"
+  },
+  {
+    "en": "intellect",
+    "ko": "지성"
+  },
+  {
+    "en": "writer",
+    "ko": "작가"
+  },
+  {
+    "en": "zoologist",
+    "ko": "동물학자"
+  },
+  {
+    "en": "observe",
+    "ko": "관찰하다"
+  },
+  {
+    "en": "communicate",
+    "ko": "전달하다"
+  },
+  {
+    "en": "honestly",
+    "ko": "정직하게"
+  },
+  {
+    "en": "accurate",
+    "ko": "정확한"
+  },
+  {
+    "en": "reflector",
+    "ko": "반사경"
+  },
+  {
+    "en": "sentiment",
+    "ko": "감정"
+  },
+  {
+    "en": "environmental threat",
+    "ko": "환경적 위협"
+  },
+  {
+    "en": "instantaneously",
+    "ko": "즉시"
+  },
+  {
+    "en": "conscious thought",
+    "ko": "의식적 사고"
+  },
+  {
+    "en": "limbic brain",
+    "ko": "변연계 뇌"
+  },
+  {
+    "en": "make sure",
+    "ko": "반드시 ~하게 하다"
+  },
+  {
+    "en": "react",
+    "ko": "반응하다"
+  },
+  {
+    "en": "as needed",
+    "ko": "필요에 따라"
+  },
+  {
+    "en": "cease",
+    "ko": "멈추다"
+  },
+  {
+    "en": "motion",
+    "ko": "움직임"
+  },
+  {
+    "en": "run away",
+    "ko": "도망가다"
+  },
+  {
+    "en": "kick at",
+    "ko": "~을 걷어차다"
+  },
+  {
+    "en": "potential threat",
+    "ko": "잠재적 위협"
+  },
+  {
+    "en": "survival regimen",
+    "ko": "생존 양생법"
+  },
+  {
+    "en": "retain",
+    "ko": "유지하다"
+  },
+  {
+    "en": "ancestral heritage",
+    "ko": "조상의 유산"
+  },
+  {
+    "en": "serve",
+    "ko": "도움이 되다"
+  },
+  {
+    "en": "continue to",
+    "ko": "계속 ~하다"
+  },
+  {
+    "en": "age-old",
+    "ko": "오래된"
+  },
+  {
+    "en": "hardwired",
+    "ko": "굳어진"
+  },
+  {
+    "en": "present A with B",
+    "ko": "A에게 B를 제시하다"
+  },
+  {
+    "en": "dangerous",
+    "ko": "위험한"
+  },
+  {
+    "en": "disagreeable",
+    "ko": "불쾌한"
+  },
+  {
+    "en": "prehistoric times",
+    "ko": "선사시대"
+  },
+  {
+    "en": "transition",
+    "ko": "전환"
+  },
+  {
+    "en": "oral culture",
+    "ko": "구전 문화"
+  },
+  {
+    "en": "hand down",
+    "ko": "전수하다"
+  },
+  {
+    "en": "apprenticeship",
+    "ko": "도제 제도"
+  },
+  {
+    "en": "literate",
+    "ko": "문자 해독의, 문자 기반의"
+  },
+  {
+    "en": "based on",
+    "ko": "~에 기반을 둔"
+  },
+  {
+    "en": "written word",
+    "ko": "문자"
+  },
+  {
+    "en": "hold back",
+    "ko": "지연시키다"
+  },
+  {
+    "en": "suitable",
+    "ko": "적절한"
+  },
+  {
+    "en": "writing material",
+    "ko": "쓰기 재료"
+  },
+  {
+    "en": "stone tablet",
+    "ko": "석판"
+  },
+  {
+    "en": "clay tablet",
+    "ko": "점토판"
+  },
+  {
+    "en": "prone to",
+    "ko": "~하기 쉬운"
+  },
+  {
+    "en": "fracture",
+    "ko": "깨지다"
+  },
+  {
+    "en": "bulky",
+    "ko": "부피가 큰"
+  },
+  {
+    "en": "transport",
+    "ko": "운반하다"
+  },
+  {
+    "en": "suffer from",
+    "ko": "~을 겪다"
+  },
+  {
+    "en": "splitting",
+    "ko": "갈라짐"
+  },
+  {
+    "en": "susceptible to",
+    "ko": "~에 취약한"
+  },
+  {
+    "en": "decay",
+    "ko": "부패"
+  },
+  {
+    "en": "wall painting",
+    "ko": "벽화"
+  },
+  {
+    "en": "static",
+    "ko": "고정된"
+  },
+  {
+    "en": "invention",
+    "ko": "발명"
+  },
+  {
+    "en": "replace A with B",
+    "ko": "A를 B로 대체하다"
+  },
+  {
+    "en": "scroll",
+    "ko": "두루마리"
+  },
+  {
+    "en": "codex",
+    "ko": "코덱스"
+  },
+  {
+    "en": "reach one’s full potential",
+    "ko": "완전한 잠재력에 도달하다"
+  },
+  {
+    "en": "dominant",
+    "ko": "지배적인"
+  },
+  {
+    "en": "guardian",
+    "ko": "수호자"
+  },
+  {
+    "en": "remarkable",
+    "ko": "놀라운"
+  },
+  {
+    "en": "reason",
+    "ko": "이유"
+  },
+  {
+    "en": "conclusion",
+    "ko": "결론"
+  },
+  {
+    "en": "consist in",
+    "ko": "~에 존재하다"
+  },
+  {
+    "en": "single",
+    "ko": "단 하나의"
+  },
+  {
+    "en": "claim",
+    "ko": "주장"
+  },
+  {
+    "en": "no matter how",
+    "ko": "아무리 ~하더라도"
+  },
+  {
+    "en": "state",
+    "ko": "진술하다"
+  },
+  {
+    "en": "short-hand",
+    "ko": "속기식 표현"
+  },
+  {
+    "en": "analytically",
+    "ko": "분석적으로"
+  },
+  {
+    "en": "complex",
+    "ko": "복잡한"
+  },
+  {
+    "en": "interaction",
+    "ko": "상호작용"
+  },
+  {
+    "en": "implication",
+    "ko": "함의"
+  },
+  {
+    "en": "break down",
+    "ko": "나누다"
+  },
+  {
+    "en": "chain",
+    "ko": "연결 고리"
+  },
+  {
+    "en": "precise",
+    "ko": "정확한"
+  },
+  {
+    "en": "premise",
+    "ko": "전제"
+  },
+  {
+    "en": "for example",
+    "ko": "예를 들어"
+  },
+  {
+    "en": "university education",
+    "ko": "대학 교육"
+  },
+  {
+    "en": "free",
+    "ko": "무료의"
+  },
+  {
+    "en": "support",
+    "ko": "뒷받침하다"
+  },
+  {
+    "en": "economy",
+    "ko": "경제"
+  },
+  {
+    "en": "benefit from",
+    "ko": "~로부터 이익을 얻다"
+  },
+  {
+    "en": "well-educated",
+    "ko": "잘 교육받은"
+  },
+  {
+    "en": "population",
+    "ko": "인구"
+  },
+  {
+    "en": "analysis",
+    "ko": "분석"
+  },
+  {
+    "en": "situation",
+    "ko": "상황"
+  },
+  {
+    "en": "clearly",
+    "ko": "명확하게"
+  },
+  {
+    "en": "express",
+    "ko": "표현하다"
+  },
+  {
+    "en": "hardly",
+    "ko": "거의 ~아니다"
+  },
+  {
+    "en": "introduce",
+    "ko": "도입하다"
+  },
+  {
+    "en": "economic benefit",
+    "ko": "경제적 이익"
+  },
+  {
+    "en": "obvious",
+    "ko": "명백한"
+  },
+  {
+    "en": "purpose",
+    "ko": "목적"
+  },
+  {
+    "en": "reasoning",
+    "ko": "추론"
+  },
+  {
+    "en": "avoid",
+    "ko": "피하다"
+  },
+  {
+    "en": "assume",
+    "ko": "가정하다"
+  },
+  {
+    "en": "carefully",
+    "ko": "신중하게"
+  },
+  {
+    "en": "work through",
+    "ko": "자세히 살펴보다"
+  },
+  {
+    "en": "connection",
+    "ko": "연결"
+  },
+  {
+    "en": "various",
+    "ko": "다양한"
+  },
+  {
+    "en": "initial",
+    "ko": "초기의"
+  },
+  {
+    "en": "migration",
+    "ko": "이주"
+  },
+  {
+    "en": "popular media",
+    "ko": "대중 매체"
+  },
+  {
+    "en": "scientific literature",
+    "ko": "과학 문헌"
+  },
+  {
+    "en": "crisis",
+    "ko": "위기"
+  },
+  {
+    "en": "migrant",
+    "ko": "이주민"
+  },
+  {
+    "en": "overcrowd",
+    "ko": "과밀화시키다"
+  },
+  {
+    "en": "clog up",
+    "ko": "막히게 하다"
+  },
+  {
+    "en": "labor market",
+    "ko": "노동 시장"
+  },
+  {
+    "en": "increase",
+    "ko": "증가시키다"
+  },
+  {
+    "en": "poverty",
+    "ko": "빈곤"
+  },
+  {
+    "en": "questionable",
+    "ko": "의심스러운"
+  },
+  {
+    "en": "assumption",
+    "ko": "가정"
+  },
+  {
+    "en": "involuntary",
+    "ko": "본의 아닌"
+  },
+  {
+    "en": "flee",
+    "ko": "피해서 떠나다"
+  },
+  {
+    "en": "natural disaster",
+    "ko": "자연재해"
+  },
+  {
+    "en": "man-made disaster",
+    "ko": "인위적 재난"
+  },
+  {
+    "en": "reality",
+    "ko": "현실"
+  },
+  {
+    "en": "complex",
+    "ko": "복잡한"
+  },
+  {
+    "en": "seek",
+    "ko": "찾다"
+  },
+  {
+    "en": "economic opportunity",
+    "ko": "경제적 기회"
+  },
+  {
+    "en": "of course",
+    "ko": "물론"
+  },
+  {
+    "en": "create",
+    "ko": "일으키다"
+  },
+  {
+    "en": "preexisting",
+    "ko": "기존의"
+  },
+  {
+    "en": "solution",
+    "ko": "해결책"
+  },
+  {
+    "en": "out-migration",
+    "ko": "외부 이주"
+  },
+  {
+    "en": "generally",
+    "ko": "일반적으로"
+  },
+  {
+    "en": "redistribute",
+    "ko": "재분배하다"
+  },
+  {
+    "en": "labor surplus",
+    "ko": "노동 과잉"
+  },
+  {
+    "en": "demand",
+    "ko": "수요"
+  },
+  {
+    "en": "selective of",
+    "ko": "~을 선택하는"
+  },
+  {
+    "en": "flexible",
+    "ko": "유연한"
+  },
+  {
+    "en": "willing to",
+    "ko": "기꺼이 ~하는"
+  },
+  {
+    "en": "endure",
+    "ko": "견디다"
+  },
+  {
+    "en": "hardship",
+    "ko": "고난"
+  },
+  {
+    "en": "in hopes of",
+    "ko": "~을 희망하며"
+  },
+  {
+    "en": "relative to",
+    "ko": "~에 비해"
+  },
+  {
+    "en": "prospect",
+    "ko": "전망"
+  },
+  {
+    "en": "place of origin",
+    "ko": "본거지"
+  },
+  {
+    "en": "long-term outcome",
+    "ko": "장기적 결과"
+  },
+  {
+    "en": "remittance",
+    "ko": "송금"
+  },
+  {
+    "en": "intergenerational mobility",
+    "ko": "세대 간 이동"
+  },
+  {
+    "en": "destination",
+    "ko": "목적지"
+  },
+  {
+    "en": "positive effect",
+    "ko": "긍정적 효과"
+  },
+  {
+    "en": "government",
+    "ko": "정부"
+  },
+  {
+    "en": "create money",
+    "ko": "돈을 만들다"
+  },
+  {
+    "en": "run",
+    "ko": "운영하다"
+  },
+  {
+    "en": "face",
+    "ko": "직면하다"
+  },
+  {
+    "en": "temptation",
+    "ko": "유혹"
+  },
+  {
+    "en": "spend",
+    "ko": "쓰다"
+  },
+  {
+    "en": "ancient",
+    "ko": "고대의"
+  },
+  {
+    "en": "king",
+    "ko": "왕"
+  },
+  {
+    "en": "politician",
+    "ko": "정치인"
+  },
+  {
+    "en": "over the centuries",
+    "ko": "수세기 동안"
+  },
+  {
+    "en": "lead to",
+    "ko": "~을 초래하다"
+  },
+  {
+    "en": "inflation",
+    "ko": "인플레이션"
+  },
+  {
+    "en": "economic",
+    "ko": "경제의"
+  },
+  {
+    "en": "social problem",
+    "ko": "사회 문제"
+  },
+  {
+    "en": "follow from",
+    "ko": "~에서 비롯되다"
+  },
+  {
+    "en": "for this reason",
+    "ko": "이러한 이유로"
+  },
+  {
+    "en": "prefer",
+    "ko": "선호하다"
+  },
+  {
+    "en": "gold",
+    "ko": "금"
+  },
+  {
+    "en": "silver",
+    "ko": "은"
+  },
+  {
+    "en": "inherently",
+    "ko": "본질적으로"
+  },
+  {
+    "en": "limited in supply",
+    "ko": "공급이 제한된"
+  },
+  {
+    "en": "deprive A of B",
+    "ko": "A에게서 B를 박탈하다"
+  },
+  {
+    "en": "power",
+    "ko": "권한"
+  },
+  {
+    "en": "expand",
+    "ko": "확장하다"
+  },
+  {
+    "en": "money supply",
+    "ko": "돈 공급"
+  },
+  {
+    "en": "inflationary",
+    "ko": "인플레이션의"
+  },
+  {
+    "en": "ideal",
+    "ko": "이상적인"
+  },
+  {
+    "en": "rapidly",
+    "ko": "급격히"
+  },
+  {
+    "en": "paper money",
+    "ko": "종이돈"
+  },
+  {
+    "en": "convertible into",
+    "ko": "~으로 전환 가능한"
+  },
+  {
+    "en": "individual",
+    "ko": "개인"
+  },
+  {
+    "en": "back up",
+    "ko": "보장하다"
+  },
+  {
+    "en": "misleading",
+    "ko": "오해를 일으키는"
+  },
+  {
+    "en": "transfer",
+    "ko": "이전되다"
+  },
+  {
+    "en": "in fact",
+    "ko": "사실상"
+  },
+  {
+    "en": "issue",
+    "ko": "발행하다"
+  },
+  {
+    "en": "study",
+    "ko": "연구"
+  },
+  {
+    "en": "emotion",
+    "ko": "감정"
+  },
+  {
+    "en": "decision making",
+    "ko": "의사결정"
+  },
+  {
+    "en": "of considerable importance",
+    "ko": "상당히 중요한"
+  },
+  {
+    "en": "involve",
+    "ko": "포함하다"
+  },
+  {
+    "en": "application",
+    "ko": "적용"
+  },
+  {
+    "en": "various",
+    "ko": "다양한"
+  },
+  {
+    "en": "tool",
+    "ko": "도구"
+  },
+  {
+    "en": "afford",
+    "ko": "제공하다"
+  },
+  {
+    "en": "neuroscience",
+    "ko": "신경과학"
+  },
+  {
+    "en": "stream",
+    "ko": "흐름"
+  },
+  {
+    "en": "literature",
+    "ko": "문헌"
+  },
+  {
+    "en": "examine",
+    "ko": "조사하다"
+  },
+  {
+    "en": "brain damage",
+    "ko": "뇌 손상"
+  },
+  {
+    "en": "particular",
+    "ko": "특정한"
+  },
+  {
+    "en": "cognitive function",
+    "ko": "인지 기능"
+  },
+  {
+    "en": "impact on",
+    "ko": "~에 영향을 미치다"
+  },
+  {
+    "en": "research",
+    "ko": "연구"
+  },
+  {
+    "en": "emotional",
+    "ko": "감정적인"
+  },
+  {
+    "en": "reduce",
+    "ko": "감소시키다"
+  },
+  {
+    "en": "efficacy",
+    "ko": "효율성"
+  },
+  {
+    "en": "product",
+    "ko": "결과물"
+  },
+  {
+    "en": "in conjunction with",
+    "ko": "~와 함께"
+  },
+  {
+    "en": "deliberative",
+    "ko": "숙고적인"
+  },
+  {
+    "en": "contradict",
+    "ko": "모순되다"
+  },
+  {
+    "en": "conventional economics",
+    "ko": "전통 경제학"
+  },
+  {
+    "en": "negative role",
+    "ko": "부정적 역할"
+  },
+  {
+    "en": "process",
+    "ko": "과정"
+  },
+  {
+    "en": "model",
+    "ko": "모델화하다"
+  },
+  {
+    "en": "generate",
+    "ko": "만들어지다"
+  },
+  {
+    "en": "stoic",
+    "ko": "냉정한"
+  },
+  {
+    "en": "unemotional",
+    "ko": "감정적이지 않은"
+  },
+  {
+    "en": "tend to",
+    "ko": "~하는 경향이 있다"
+  },
+  {
+    "en": "optimal",
+    "ko": "최적인"
+  },
+  {
+    "en": "evidence",
+    "ko": "증거"
+  },
+  {
+    "en": "suggest",
+    "ko": "시사하다"
+  },
+  {
+    "en": "enhance",
+    "ko": "향상시키다"
+  },
+  {
+    "en": "effectiveness",
+    "ko": "효율성"
+  },
+  {
+    "en": "counter",
+    "ko": "반박하다"
+  },
+  {
+    "en": "traditional economics",
+    "ko": "전통 경제학"
+  },
+  {
+    "en": "shopper",
+    "ko": "쇼핑객"
+  },
+  {
+    "en": "confront A with B",
+    "ko": "A에게 B를 직면하게 하다"
+  },
+  {
+    "en": "choice",
+    "ko": "선택"
+  },
+  {
+    "en": "variety",
+    "ko": "종류"
+  },
+  {
+    "en": "gourmet chocolate",
+    "ko": "고급 초콜릿"
+  },
+  {
+    "en": "be likely to",
+    "ko": "~할 가능성이 있다"
+  },
+  {
+    "en": "walk away",
+    "ko": "떠나다"
+  },
+  {
+    "en": "compared with",
+    "ko": "~와 비교했을 때"
+  },
+  {
+    "en": "present A with B",
+    "ko": "A에게 B를 제시하다"
+  },
+  {
+    "en": "half a dozen",
+    "ko": "여섯 개"
+  },
+  {
+    "en": "employee",
+    "ko": "직원"
+  },
+  {
+    "en": "free trip",
+    "ko": "무료 여행"
+  },
+  {
+    "en": "destination",
+    "ko": "목적지"
+  },
+  {
+    "en": "disruptive",
+    "ko": "혼란스러운"
+  },
+  {
+    "en": "force A to B",
+    "ko": "A가 B하도록 강요하다"
+  },
+  {
+    "en": "comparison",
+    "ko": "비교"
+  },
+  {
+    "en": "acknowledge",
+    "ko": "인정하다"
+  },
+  {
+    "en": "relative disadvantage",
+    "ko": "상대적인 단점"
+  },
+  {
+    "en": "complain",
+    "ko": "불평하다"
+  },
+  {
+    "en": "regret",
+    "ko": "후회하다"
+  },
+  {
+    "en": "psychologist",
+    "ko": "심리학자"
+  },
+  {
+    "en": "tyranny",
+    "ko": "횡포"
+  },
+  {
+    "en": "rather than",
+    "ko": "~라기보다는"
+  },
+  {
+    "en": "provide",
+    "ko": "제공하다"
+  },
+  {
+    "en": "freedom",
+    "ko": "자유"
+  },
+  {
+    "en": "actually",
+    "ko": "실제로"
+  },
+  {
+    "en": "constrain",
+    "ko": "제약하다"
+  },
+  {
+    "en": "decision-making",
+    "ko": "의사결정"
+  },
+  {
+    "en": "argue",
+    "ko": "주장하다"
+  },
+  {
+    "en": "increase",
+    "ko": "증가시키다"
+  },
+  {
+    "en": "unhappiness",
+    "ko": "불행"
+  },
+  {
+    "en": "worry",
+    "ko": "걱정하다"
+  },
+  {
+    "en": "wrong decision",
+    "ko": "잘못된 결정"
+  },
+  {
+    "en": "stressed",
+    "ko": "스트레스를 받는"
+  },
+  {
+    "en": "process",
+    "ko": "처리하다"
+  },
+  {
+    "en": "in an effort to",
+    "ko": "~하려는 노력으로"
+  },
+  {
+    "en": "fear",
+    "ko": "두려움"
+  },
+  {
+    "en": "expectation",
+    "ko": "기대"
+  },
+  {
+    "en": "best choice",
+    "ko": "최상의 선택"
+  },
+  {
+    "en": "wonder whether",
+    "ko": "~인지 궁금해하다"
+  },
+  {
+    "en": "pull into",
+    "ko": "~에 도착하다"
+  },
+  {
+    "en": "quiet",
+    "ko": "조용한"
+  },
+  {
+    "en": "countryside station",
+    "ko": "시골 역"
+  },
+  {
+    "en": "gentle chatter",
+    "ko": "부드러운 대화 소리"
+  },
+  {
+    "en": "passenger",
+    "ko": "승객"
+  },
+  {
+    "en": "fill the air",
+    "ko": "공기를 가득 채우다"
+  },
+  {
+    "en": "excited",
+    "ko": "들뜬"
+  },
+  {
+    "en": "finally",
+    "ko": "마침내"
+  },
+  {
+    "en": "grandparent",
+    "ko": "조부모"
+  },
+  {
+    "en": "hurriedly",
+    "ko": "분주히"
+  },
+  {
+    "en": "seat",
+    "ko": "좌석"
+  },
+  {
+    "en": "elderly woman",
+    "ko": "노인 여성"
+  },
+  {
+    "en": "struggle with",
+    "ko": "~와 씨름하다"
+  },
+  {
+    "en": "hesitate",
+    "ko": "망설이다"
+  },
+  {
+    "en": "unsure",
+    "ko": "확신이 서지 않는"
+  },
+  {
+    "en": "assist",
+    "ko": "돕다"
+  },
+  {
+    "en": "reach",
+    "ko": "닿다"
+  },
+  {
+    "en": "lose one’s balance",
+    "ko": "균형을 잃다"
+  },
+  {
+    "en": "fall down",
+    "ko": "쓰러지다"
+  },
+  {
+    "en": "pale",
+    "ko": "창백한"
+  },
+  {
+    "en": "freeze",
+    "ko": "얼어붙다"
+  },
+  {
+    "en": "urgency",
+    "ko": "긴박함"
+  },
+  {
+    "en": "kneel down",
+    "ko": "무릎을 꿇다"
+  },
+  {
+    "en": "beside",
+    "ko": "~의 곁에"
+  },
+  {
+    "en": "rush over",
+    "ko": "서둘러 달려오다"
+  },
+  {
+    "en": "tap",
+    "ko": "두드리다"
+  },
+  {
+    "en": "groan",
+    "ko": "끙 소리를 내다"
+  },
+  {
+    "en": "gather one’s strength",
+    "ko": "힘을 내다"
+  },
+  {
+    "en": "slide",
+    "ko": "밀어 넣다"
+  },
+  {
+    "en": "reassure",
+    "ko": "안심시키다"
+  },
+  {
+    "en": "relax",
+    "ko": "편하게 쉬다"
+  },
+  {
+    "en": "guide",
+    "ko": "안내하다"
+  },
+  {
+    "en": "settle",
+    "ko": "안정되다"
+  },
+  {
+    "en": "calm down",
+    "ko": "안정을 찾다"
+  },
+  {
+    "en": "low blood pressure",
+    "ko": "저혈압"
+  },
+  {
+    "en": "sudden movement",
+    "ko": "갑작스러운 움직임"
+  },
+  {
+    "en": "dizzy",
+    "ko": "어지러운"
+  },
+  {
+    "en": "nod",
+    "ko": "고개를 끄덕이다"
+  },
+  {
+    "en": "in response",
+    "ko": "대답으로"
+  },
+  {
+    "en": "turn one’s gaze back to",
+    "ko": "시선을 다시 ~로 돌리다"
+  },
+  {
+    "en": "peaceful",
+    "ko": "평화로운"
+  },
+  {
+    "en": "countryside scene",
+    "ko": "시골 풍경"
+  },
+  {
+    "en": "no matter how",
+    "ko": "아무리 ~하더라도"
+  },
+  {
+    "en": "act of help",
+    "ko": "도움의 행위"
+  },
+  {
+    "en": "someone in need",
+    "ko": "도움이 필요한 사람"
+  },
+  {
+    "en": "much better than",
+    "ko": "~보다 훨씬 더 나은"
+  }
+];
+
+const MAX_LIVES = 5;
+const QUESTION_DELAY = 700;
+
+const englishEl = document.getElementById("english");
+const progressTextEl = document.getElementById("progressText");
+const lane = document.getElementById("lane");
+const message = document.getElementById("message");
+const lifeWrap = document.getElementById("lifeWrap");
+const meter = document.getElementById("meter");
+const meterValue = document.getElementById("meterValue");
+const overlay = document.getElementById("overlay");
+const startBtn = document.getElementById("startBtn");
+
+let playerLives = MAX_LIVES;
+let currentIndex = 0;
+let currentWord = null;
+let quizWords = [];
+let laneX = -1000;
+let speed = 2.8;
+let running = false;
+let answered = false;
+
+function shuffle(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function updateHud() {
+  lifeWrap.innerHTML = "";
+  for (let i = 0; i < MAX_LIVES; i++) {
+    const life = document.createElement("div");
+    life.className = "life";
+    if (i >= playerLives) {
+      life.classList.add("dead");
+    }
+    lifeWrap.appendChild(life);
+  }
+
+  progressTextEl.textContent = `${currentIndex} / ${quizWords.length}`;
+
+  const percent = quizWords.length
+    ? Math.round((currentIndex / quizWords.length) * 100)
+    : 0;
+  meter.style.setProperty("--meter", `${percent}%`);
+  meterValue.textContent = `${percent}%`;
+}
+
+function showMessage(text, cls) {
+  message.textContent = text;
+  message.className = "";
+  message.classList.add(cls, "show");
+  setTimeout(() => {
+    message.className = "";
+  }, 700);
+}
+
+function nextQuestion() {
+  if (playerLives <= 0) {
+    gameOver(false);
+    return;
+  }
+
+  if (currentIndex >= quizWords.length) {
+    gameOver(true);
+    return;
+  }
+
+  answered = false;
+  currentWord = quizWords[currentIndex];
+  englishEl.textContent = currentWord.en;
+  updateHud();
+
+  const wrongs = shuffle(
+    words
+      .map((item) => item.ko)
+      .filter((ko) => ko !== currentWord.ko)
+  ).slice(0, 3);
+
+  const options = shuffle([currentWord.ko, ...wrongs]);
+  lane.innerHTML = "";
+
+  options.forEach((option) => {
+    const choice = document.createElement("div");
+    choice.className = "choice";
+    choice.textContent = option;
+
+    choice.onclick = () => {
+      if (answered) return;
+      answered = true;
+
+      if (option === currentWord.ko) {
+        choice.classList.add("good");
+        showMessage("HIT!", "hit");
+      } else {
+        choice.classList.add("bad");
+        loseLife("WRONG!");
+      }
+
+      currentIndex += 1;
+      updateHud();
+
+      setTimeout(() => {
+        nextQuestion();
+      }, QUESTION_DELAY);
+    };
+
+    lane.appendChild(choice);
+  });
+
+  laneX = -lane.offsetWidth;
+}
+
+function loseLife(text) {
+  playerLives -= 1;
+  updateHud();
+  document.body.classList.add("shake");
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+  }, 350);
+  showMessage(text, "wrong");
+}
+
+function gameLoop() {
+  if (!running) return;
+
+  laneX += speed;
+  lane.style.left = laneX + "px";
+
+  const limit = window.innerWidth + 60;
+  if (laneX > limit && !answered) {
+    answered = true;
+    currentIndex += 1;
+    loseLife("TIME OVER");
+    setTimeout(() => {
+      nextQuestion();
+    }, QUESTION_DELAY);
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+function gameOver(win) {
+  running = false;
+  const solved = currentIndex;
+
+  overlay.style.display = "flex";
+  overlay.innerHTML = `
+    <div class="card">
+      <h2>${win ? "승리!" : "패배!"}</h2>
+      <p>
+        ${win
+          ? "전체 어휘를 끝까지 클리어했습니다."
+          : "목숨을 모두 잃었습니다."}<br><br>
+        푼 문제: ${solved} / ${quizWords.length}
+      </p>
+      <button onclick="restartGame()">다시 시작</button>
+    </div>
+  `;
+}
+
+function restartGame() {
+  playerLives = MAX_LIVES;
+  currentIndex = 0;
+  quizWords = shuffle(words);
+  speed = quizWords.length > 220 ? 2.95 : 2.75;
+  overlay.style.display = "none";
+  updateHud();
+  nextQuestion();
+  running = true;
+  requestAnimationFrame(gameLoop);
+}
+
+startBtn.onclick = () => {
+  restartGame();
+};
+
+updateHud();
+</script>
+</body>
+</html>
